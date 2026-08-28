@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Blade : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class Blade : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         bladeCollider = GetComponent<Collider2D>();
         trailRenderer = GetComponentInChildren<TrailRenderer>();
+
+        if (trailRenderer != null)
+        {
+            trailRenderer.sortingOrder = 100; // Đưa tia cắt lên trên cùng
+        }
     }
 
     private void OnEnable()
@@ -35,11 +41,13 @@ public class Blade : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Pointer.current == null) return;
+
+        if (Pointer.current.press.wasPressedThisFrame)
         {
             StartSlice();
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Pointer.current.press.wasReleasedThisFrame)
         {
             StopSlice();
         }
@@ -51,7 +59,7 @@ public class Blade : MonoBehaviour
 
     private void StartSlice()
     {
-        Vector3 newPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 newPosition = mainCamera.ScreenToWorldPoint(Pointer.current.position.ReadValue());
         newPosition.z = 0f;
 
         transform.position = newPosition;
@@ -73,7 +81,7 @@ public class Blade : MonoBehaviour
 
     private void ContinueSlice()
     {
-        Vector3 newPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 newPosition = mainCamera.ScreenToWorldPoint(Pointer.current.position.ReadValue());
         newPosition.z = 0f;
 
         // Nếu vuốt đủ dài

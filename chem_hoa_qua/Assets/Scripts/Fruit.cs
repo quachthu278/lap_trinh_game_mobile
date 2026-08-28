@@ -49,7 +49,7 @@ public class Fruit : MonoBehaviour
     {
         if (isBomb)
         {
-            GameManager.Instance.GameOver();
+            GameManager.Instance.LoseLife();
         }
         else
         {

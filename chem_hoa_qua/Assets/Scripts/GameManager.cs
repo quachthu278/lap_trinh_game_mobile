@@ -7,7 +7,9 @@ public class GameManager : MonoBehaviour
 
     [Header("UI Elements")]
     public Text scoreText; // Nếu bạn dùng TextMeshPro, thay đổi thành TMPro.TextMeshProUGUI
-    public Text livesText;
+    public Image[] heartIcons;
+    public GameObject gameOverPanel;
+    public Text finalScoreText;
 
     private int score;
     private int lives = 3;
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
         score = 0;
         lives = 3;
         isGameOver = false;
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
         UpdateUI();
         Time.timeScale = 1f; // Chạy game bình thường
         Debug.Log("Game bắt đầu!");
@@ -67,7 +70,16 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         Time.timeScale = 0f; // Dừng thời gian
         Debug.Log("Game Over!");
-        // Bạn có thể hiển thị Panel Game Over ở đây
+        
+        if (gameOverPanel != null) 
+        {
+            gameOverPanel.SetActive(true);
+        }
+        
+        if (finalScoreText != null)
+        {
+            finalScoreText.text = score.ToString();
+        }
     }
 
     private void UpdateUI()
@@ -77,9 +89,21 @@ public class GameManager : MonoBehaviour
             scoreText.text = "Score: " + score;
         }
 
-        if (livesText != null)
+        if (heartIcons != null)
         {
-            livesText.text = "Lives: " + lives;
+            for (int i = 0; i < heartIcons.Length; i++)
+            {
+                if (i < lives)
+                    heartIcons[i].enabled = true;
+                else
+                    heartIcons[i].enabled = false;
+            }
         }
+    }
+
+    public void RestartGame()
+    {
+        // Tải lại Scene hiện tại để bắt đầu lại toàn bộ game (xóa hoa quả cũ, reset điểm...)
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 }

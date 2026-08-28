@@ -20,6 +20,7 @@ public class Spawner : MonoBehaviour
     public float bombChance = 0.1f; // 10% cơ hội sinh ra bom
 
     private Collider2D spawnArea;
+    private bool isFirstSpawn = true;
 
     private void Awake()
     {
@@ -53,8 +54,14 @@ public class Spawner : MonoBehaviour
     {
         GameObject prefabToSpawn;
         
-        // Chọn ngẫu nhiên trái cây hoặc bom
-        if (Random.value < bombChance && bombPrefab != null)
+        // Luôn phóng quả cuối cùng (quả chuối) trong lần đầu tiên
+        if (isFirstSpawn && fruitPrefabs.Length > 0)
+        {
+            prefabToSpawn = fruitPrefabs[fruitPrefabs.Length - 1]; 
+            isFirstSpawn = false;
+        }
+        // Chọn ngẫu nhiên trái cây hoặc bom cho các lần sau
+        else if (Random.value < bombChance && bombPrefab != null)
         {
             prefabToSpawn = bombPrefab;
         }
