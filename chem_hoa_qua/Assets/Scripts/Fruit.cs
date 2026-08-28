@@ -4,6 +4,7 @@ public class Fruit : MonoBehaviour
 {
     [Header("Fruit Settings")]
     public GameObject slicedFruitPrefab;
+    public GameObject explosionEffect; // Thêm biến chứa hiệu ứng nổ
     public int scoreAmount = 1;
     public bool isBomb = false;
 
@@ -49,6 +50,11 @@ public class Fruit : MonoBehaviour
     {
         if (isBomb)
         {
+            if (explosionEffect != null)
+            {
+                GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+                Destroy(explosion, 2f); // Xóa hiệu ứng sau 2 giây
+            }
             GameManager.Instance.LoseLife();
         }
         else

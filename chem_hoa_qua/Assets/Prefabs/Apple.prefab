@@ -82,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3170342408449422257, guid: 92792c489bb1e9341863b5f3b9eaa1fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fruit
   slicedFruitPrefab: {fileID: 1183948391531548472, guid: 301665ba4b3bf1546abf57ae5521c170, type: 3}
-  scoreAmount: 1
+  explosionEffect: {fileID: 0}
+  scoreAmount: 2
   isBomb: 0
   sliceForce: 5

@@ -19,12 +19,27 @@ public class Spawner : MonoBehaviour
     [Range(0f, 1f)]
     public float bombChance = 0.1f; // 10% cơ hội sinh ra bom
 
+    [Header("Difficulty Settings")]
+    public float difficultyIncreaseRate = 0.05f; // Mỗi giây/điểm giảm delay bao nhiêu
+    public float absoluteMinDelay = 0.2f; // Giới hạn delay nhỏ nhất
+    public float absoluteMaxForce = 30f; // Giới hạn lực ném lớn nhất
+    
+    private float currentMinDelay;
+    private float currentMaxDelay;
+    private float currentMinForce;
+    private float currentMaxForce;
+
     private Collider2D spawnArea;
     private bool isFirstSpawn = true;
 
     private void Awake()
     {
         spawnArea = GetComponent<Collider2D>();
+        // Khởi tạo độ khó ban đầu
+        currentMinDelay = minDelay;
+        currentMaxDelay = maxDelay;
+        currentMinForce = minForce;
+        currentMaxForce = maxForce;
     }
 
     private void OnEnable()
@@ -44,9 +59,29 @@ public class Spawner : MonoBehaviour
 
         while (true)
         {
-            float delay = Random.Range(minDelay, maxDelay);
+            float delay = Random.Range(currentMinDelay, currentMaxDelay);
             yield return new WaitForSeconds(delay);
             Spawn();
+
+            // TĂNG ĐỘ KHÓ: Giảm thời gian chờ giữa các lần phóng quả
+            if (currentMinDelay > absoluteMinDelay)
+            {
+                currentMinDelay -= difficultyIncreaseRate;
+                currentMaxDelay -= difficultyIncreaseRate;
+            }
+
+            // TĂNG ĐỘ KHÓ: Tăng lực ném để quả bay nhanh và cao hơn
+            if (currentMaxForce < absoluteMaxForce)
+            {
+                currentMinForce += (difficultyIncreaseRate * 5);
+                currentMaxForce += (difficultyIncreaseRate * 5);
+            }
+
+            // TĂNG ĐỘ KHÓ: Tăng tỷ lệ bom từ từ (tối đa 30%)
+            if (bombChance < 0.3f)
+            {
+                bombChance += 0.005f; 
+            }
         }
     }
 
@@ -91,7 +126,7 @@ public class Spawner : MonoBehaviour
         Fruit fruitScript = spawnedObject.GetComponent<Fruit>();
         if (fruitScript != null)
         {
-            float force = Random.Range(minForce, maxForce);
+            float force = Random.Range(currentMinForce, currentMaxForce);
             fruitScript.Launch(spawnedObject.transform.up, force);
         }
     }
